@@ -12,13 +12,16 @@ import {
   DEFAULT_WATER_STRENGTH,
   type DrinkChoice,
   TEA_FLAVORS,
+  isPlainWater,
+  PLAIN_WATER,
+  PLAIN_WATER_EMOJI,
   WATER_FLAVORS,
   WATER_STRENGTHS,
 } from "@/lib/menu";
 import { Card, Checkbox, ChoiceButton, firstName, ParticipantList, SectionLabel } from "./parts";
 
 type Form = {
-  cat: "koffie" | "water";
+  cat: "koffie" | "plain" | "water";
   coffee: string;
   strength: string;
   teaFlavor: string;
@@ -38,6 +41,7 @@ const DEFAULTS: Form = {
 /** Begin met je huidige bestelling (bij wijzigen), anders je vaste, anders de standaard. */
 function initialForm(start: DrinkChoice | null): Form {
   if (!start || start.drinkType === "skip") return DEFAULTS;
+  if (isPlainWater(start)) return { ...DEFAULTS, cat: "plain" };
   if (start.drinkType === "water") {
     return { ...DEFAULTS, cat: "water", flavor: start.drink, waterStrength: start.option };
   }
@@ -52,6 +56,7 @@ function initialForm(start: DrinkChoice | null): Form {
 }
 
 function toChoice(f: Form): DrinkChoice {
+  if (f.cat === "plain") return { drinkType: "water", drink: PLAIN_WATER, option: "" };
   if (f.cat === "water") return { drinkType: "water", drink: f.flavor, option: f.waterStrength };
   const follow = coffeeFollowUp(f.coffee);
   return {
@@ -104,6 +109,7 @@ export function OrderScreen({
         {(
           [
             ["koffie", "☕", "Koffie"],
+            ["plain", PLAIN_WATER_EMOJI, PLAIN_WATER],
             ["water", "💧", "Water met smaakje"],
           ] as const
         ).map(([cat, emoji, label]) => (

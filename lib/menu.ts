@@ -38,6 +38,14 @@ export const WATER_STRENGTHS = [
   { name: "Sterk", emoji: "💪" },
 ] as const;
 
+/** Gewoon water: een water-bestelling zonder smaakje en zonder sterkte. */
+export const PLAIN_WATER = "Gewoon water";
+export const PLAIN_WATER_EMOJI = "🚰";
+
+export function isPlainWater(o: { drinkType: string; drink: string }) {
+  return o.drinkType === "water" && o.drink === PLAIN_WATER;
+}
+
 export const DEFAULT_COFFEE_STRENGTH = "Normaal";
 export const DEFAULT_TEA_FLAVOR = "Earl Grey";
 export const DEFAULT_WATER_STRENGTH = "Normaal";
@@ -61,6 +69,7 @@ export type DrinkChoice =
 /**
  * `option` hangt af van het drankje: de sterkte (koffie), het smaakje (thee)
  * of de sterkte (water). Het smaakje van water staat in `drink`.
+ * Gewoon water: drink = "Gewoon water", option = "".
  */
 export const DrinkChoiceSchema = z
   .discriminatedUnion("drinkType", [
@@ -71,8 +80,8 @@ export const DrinkChoiceSchema = z
     }),
     z.object({
       drinkType: z.literal("water"),
-      drink: z.enum(names(WATER_FLAVORS) as [string, ...string[]]),
-      option: z.enum(names(WATER_STRENGTHS) as [string, ...string[]]),
+      drink: z.enum([PLAIN_WATER, ...names(WATER_FLAVORS)] as [string, ...string[]]),
+      option: z.string(),
     }),
     z.object({
       drinkType: z.literal("skip"),
@@ -81,14 +90,19 @@ export const DrinkChoiceSchema = z
     }),
   ])
   .superRefine((v, ctx) => {
-    if (v.drinkType !== "koffie") return;
-    const follow = coffeeFollowUp(v.drink);
-    const allowed =
-      follow === "strength"
-        ? names(COFFEE_STRENGTHS)
-        : follow === "tea"
-          ? names(TEA_FLAVORS)
-          : [""];
+    if (v.drinkType === "skip") return;
+    let allowed: string[];
+    if (v.drinkType === "water") {
+      allowed = v.drink === PLAIN_WATER ? [""] : names(WATER_STRENGTHS);
+    } else {
+      const follow = coffeeFollowUp(v.drink);
+      allowed =
+        follow === "strength"
+          ? names(COFFEE_STRENGTHS)
+          : follow === "tea"
+            ? names(TEA_FLAVORS)
+            : [""];
+    }
     if (!allowed.includes(v.option)) {
       ctx.addIssue({
         code: "custom",
@@ -104,6 +118,7 @@ export type OrderLike = { drinkType: "koffie" | "water" | "skip"; drink: string;
 export function orderTitle(o: OrderLike): { emoji: string; title: string } {
   if (o.drinkType === "skip") return { emoji: "🙅", title: "Slaat 'n beurtje over" };
   if (o.drinkType === "koffie") return { emoji: emojiOf(COFFEES, o.drink) || "☕", title: o.drink };
+  if (isPlainWater(o)) return { emoji: PLAIN_WATER_EMOJI, title: PLAIN_WATER };
   return { emoji: "💧", title: "Water met smaakje" };
 }
 
@@ -115,6 +130,7 @@ export function orderTags(o: OrderLike): string[] {
     const list = coffeeFollowUp(o.drink) === "tea" ? TEA_FLAVORS : COFFEE_STRENGTHS;
     return [`${emojiOf(list, o.option)} ${o.option}`.trim()];
   }
+  if (isPlainWater(o)) return [];
   return [
     `${emojiOf(WATER_FLAVORS, o.drink)} ${o.drink}`.trim(),
     `${emojiOf(WATER_STRENGTHS, o.option)} ${o.option}`.trim(),
@@ -125,6 +141,7 @@ export function orderTags(o: OrderLike): string[] {
 export function shoppingLabel(o: OrderLike): string | null {
   if (o.drinkType === "skip") return null;
   if (o.drinkType === "koffie") return `${emojiOf(COFFEES, o.drink) || "☕"} ${o.drink}`;
+  if (isPlainWater(o)) return `${PLAIN_WATER_EMOJI} ${PLAIN_WATER}`;
   return `💧 Water — ${o.drink}`;
 }
 
@@ -139,12 +156,14 @@ export function shoppingList(orders: OrderLike[]): { label: string; count: numbe
 
 /** Label van de vaste bestelling, bv. "Cappuccino · Normaal" of "Water — Limoen". */
 export function usualLabel(o: OrderLike): string {
+  if (isPlainWater(o)) return PLAIN_WATER;
   if (o.drinkType === "water") return `Water — ${o.drink}`;
   return o.option ? `${o.drink} · ${o.option}` : o.drink;
 }
 
 /** Voor "{haler} neemt je {drankje} mee." */
 export function drinkPhrase(o: OrderLike): string {
+  if (isPlainWater(o)) return "water";
   if (o.drinkType === "water") return `water met ${o.drink.toLowerCase()}`;
   return o.drink;
 }
