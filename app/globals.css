@@ -1,26 +1,100 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Toppy design tokens (uit de Koffytijd-handoff, Toppy DS "uitgebreid").
+ * Alles staat in @theme, zodat Tailwind er utilities van maakt:
+ * bg-toppy-yellow, text-toppy-ink, rounded-card, shadow-card, ...
+ */
+@theme {
+  --font-sans: var(--font-poppins), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-toppy-yellow: #ffcb01;
+  --color-toppy-yellow-deep: #ffb913;
+  --color-toppy-yellow-light: #fff3cc;
+  --color-toppy-ink: #343e40;
+  --color-toppy-ink-hover: #232b2c;
+  --color-toppy-red: #f3575e;
+  --color-toppy-red-light: #ffe3e3;
+  --color-toppy-green: #12ac74;
+  --color-toppy-green-light: #e0f3ea;
+  --color-toppy-blue: #35acf8;
+  --color-toppy-blue-light: #e0ecf3;
+  --color-toppy-blue-dark: #16356f;
+  --color-toppy-teal-dark: #134a46;
+  --color-toppy-grey-darker: #5f6768;
+  --color-toppy-grey-dark: #8b9091;
+  --color-toppy-grey: #b7b9ba;
+  --color-toppy-grey-light: #e3e3e3;
+  --color-toppy-grey-lighter: #f5f5f5;
+  --color-toppy-white: #ffffff;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-choice: 12px;
+  --radius-btn-lg: 14px;
+  --radius-card: 18px;
+  --radius-hero: 22px;
+  --radius-pill: 999px;
+
+  --shadow-xs: 0 1px 2px rgba(52, 62, 64, 0.06);
+  --shadow-soft: 0 2px 8px rgba(52, 62, 64, 0.05);
+  --shadow-card: 0 4px 20px rgba(52, 62, 64, 0.08);
+  --shadow-header: 0 2px 10px rgba(52, 62, 64, 0.12);
+  --shadow-toast: 0 8px 28px rgba(52, 62, 64, 0.2);
+  --shadow-yellow: 0 8px 28px rgba(255, 203, 1, 0.35);
+  --shadow-yellow-icon: 0 8px 24px rgba(255, 203, 1, 0.4);
+  --shadow-focus: 0 0 0 3px rgba(53, 172, 248, 0.35);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-kt-pop: kt-pop 300ms ease-out both;
+  --animate-kt-rise: kt-rise 400ms ease-out both;
+  --animate-kt-rise-fast: kt-rise 350ms ease-out both;
+
+  @keyframes kt-pop {
+    0% {
+      opacity: 0;
+      transform: translateX(24px) scale(0.96);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+  @keyframes kt-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html,
+  body {
+    background: var(--color-toppy-grey-lighter);
+    color: var(--color-toppy-ink);
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+  button {
+    cursor: pointer;
+  }
 }
