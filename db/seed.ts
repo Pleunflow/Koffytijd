@@ -2,12 +2,12 @@ import { config } from "dotenv";
 config({ quiet: true });
 import { sql } from "drizzle-orm";
 import { OFFICES } from "@/lib/offices";
-import { databaseUrl } from "@/lib/env";
+import { directDatabaseUrl } from "@/lib/env";
 import { createDb } from "./index";
 import { office } from "./schema";
 
 async function main() {
-  const { db, client } = createDb(process.env.DATABASE_URL_UNPOOLED ?? databaseUrl());
+  const { db, client } = createDb(directDatabaseUrl());
   await db
     .insert(office)
     .values([...OFFICES])

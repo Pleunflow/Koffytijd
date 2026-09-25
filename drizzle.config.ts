@@ -10,7 +10,9 @@ export default defineConfig({
     // Migraties liever zonder pooler; Neon op Vercel zet DATABASE_URL_UNPOOLED.
     url:
       process.env.DATABASE_URL_UNPOOLED ??
+      process.env.POSTGRES_URL_NON_POOLING ??
       process.env.DATABASE_URL ??
+      process.env.POSTGRES_URL ??
       "postgres://koffy:koffy@localhost:5432/koffytijd",
   },
 });

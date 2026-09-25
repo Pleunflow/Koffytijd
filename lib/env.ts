@@ -4,7 +4,8 @@
 const LOCAL_DATABASE_URL = "postgres://koffy:koffy@localhost:5432/koffytijd";
 
 export function databaseUrl(): string {
-  const url = process.env.DATABASE_URL;
+  // Neon via Vercel zet DATABASE_URL, en soms alleen de POSTGRES_*-namen.
+  const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL;
   if (url) return url;
   if (process.env.NODE_ENV === "production") {
     throw new Error("DATABASE_URL ontbreekt.");
@@ -31,4 +32,9 @@ export function authSecret(): string {
     );
   }
   return secret;
+}
+
+/** Voor migraties en seed: liever zonder connection pooler. */
+export function directDatabaseUrl(): string {
+  return process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING ?? databaseUrl();
 }
