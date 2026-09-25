@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, gt, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import { office, order, round, saldoEvent, user, usualOrder } from "@/db/schema";
+import { ROUND_SECONDS } from "@/lib/constants";
 import { KoffyError } from "@/lib/koffy-errors";
 import type { DrinkChoice } from "@/lib/menu";
 import { computeSettlement, owesOpdracht } from "@/lib/saldo";
@@ -10,7 +11,7 @@ import { computeSettlement, owesOpdracht } from "@/lib/saldo";
  * zodat tests de tijd kunnen laten verstrijken zonder te wachten.
  */
 
-export const ROUND_SECONDS = 120;
+export { ROUND_SECONDS };
 /** Hoe lang een gesloten ronde nog getoond wordt (lijstje afvinken, "Te laat"). */
 export const RECENT_ROUND_MINUTES = 15;
 
