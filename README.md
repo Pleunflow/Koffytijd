@@ -155,7 +155,7 @@ later in `lib/auth.ts`.
 
 ## Nog open / bekende punten
 
-- De iconen (Toppy-logo, megafoon, auto) zijn tijdelijke vervangers. De officiële SVG's
+- De iconen voor megafoon en auto zijn tijdelijke vervangers. De officiële SVG's
   uit `assets/icons/` zaten niet in de handoff. Vervang ze in `components/icons.tsx`.
 - shadcn/ui is handmatig opgezet (`components.json` + `components/ui/`), want het
   registry was niet bereikbaar bij het bouwen. `pnpm dlx shadcn@latest add <component>`

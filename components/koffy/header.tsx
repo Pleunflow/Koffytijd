@@ -11,7 +11,7 @@ export function Header({ onHome, round }: Props) {
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between bg-toppy-ink px-8 py-3.5 text-white shadow-header">
       <button type="button" onClick={onHome} className="flex items-center gap-3">
-        <ToppyIcon size={30} className="text-toppy-yellow" />
+        <ToppyIcon size={36} />
         <span className="text-[21px] font-bold tracking-[0.2px]">
           Koffy<span className="text-toppy-yellow">tijd</span>
         </span>
