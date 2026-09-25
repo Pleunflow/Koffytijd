@@ -16,6 +16,6 @@ const BRANDS: Record<BrandId, Brand> = {
 };
 
 export function getBrand(): Brand {
-  const id = (process.env.BRAND ?? "toppy") as BrandId;
+  const id = (process.env.BRAND || "toppy") as BrandId;
   return BRANDS[id] ?? BRANDS.toppy;
 }

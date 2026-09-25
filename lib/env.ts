@@ -17,7 +17,7 @@ export function databaseUrl(): string {
 export type AuthMode = "local";
 
 export function authMode(): AuthMode {
-  const mode = process.env.AUTH_MODE ?? "local";
+  const mode = process.env.AUTH_MODE || "local"; // leeg telt als niet gezet
   if (mode !== "local") {
     throw new Error(`AUTH_MODE=${mode} wordt nog niet ondersteund. Gebruik AUTH_MODE=local.`);
   }
