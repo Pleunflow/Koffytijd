@@ -7,7 +7,7 @@ import { createDb } from "./index";
 import { office } from "./schema";
 
 async function main() {
-  const { db, client } = createDb(databaseUrl());
+  const { db, client } = createDb(process.env.DATABASE_URL_UNPOOLED ?? databaseUrl());
   await db
     .insert(office)
     .values([...OFFICES])

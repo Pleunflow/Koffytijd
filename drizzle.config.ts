@@ -7,6 +7,10 @@ export default defineConfig({
   out: "./db/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "postgres://koffy:koffy@localhost:5432/koffytijd",
+    // Migraties liever zonder pooler; Neon op Vercel zet DATABASE_URL_UNPOOLED.
+    url:
+      process.env.DATABASE_URL_UNPOOLED ??
+      process.env.DATABASE_URL ??
+      "postgres://koffy:koffy@localhost:5432/koffytijd",
   },
 });

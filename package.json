@@ -16,7 +16,8 @@
     "db:down": "docker compose down",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx db/seed.ts"
+    "db:seed": "tsx db/seed.ts",
+    "vercel-build": "drizzle-kit migrate && tsx db/seed.ts && next build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.3.3",

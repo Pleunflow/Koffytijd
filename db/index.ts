@@ -6,7 +6,12 @@ import * as schema from "./schema";
 export type Db = PostgresJsDatabase<typeof schema>;
 
 export function createDb(url: string) {
-  const client = postgres(url, { max: 10 });
+  const client = postgres(url, {
+    // Op Vercel draait elke functie los: houd het per functie bij één verbinding.
+    max: process.env.VERCEL ? 1 : 10,
+    // Nodig voor de connection pooler van Neon; lokaal maakt het niet uit.
+    prepare: false,
+  });
   return { db: drizzle(client, { schema }), client };
 }
 

@@ -5,8 +5,8 @@ Interne website waarmee collega's per kantoor samen koffie bestellen. Iemand roe
 een gedeeld lijstje, en een koffiesaldo houdt bij wie vaak haalt en wie vaak laat halen.
 
 Deze fase draait op **één laptop op het kantoornetwerk**. Collega's openen de site via
-`http://<ip-van-laptop>:3000`. Later moet dezelfde app zonder verbouwing naar
-Vercel + Neon kunnen (zie [Later naar Vercel + Neon](#later-naar-vercel--neon)).
+`http://<ip-van-laptop>:3000`. Hij kan ook op Vercel + Neon
+(zie [Op Vercel zetten](#op-vercel-zetten-met-neon)).
 
 ## Wat heb je nodig
 
@@ -138,14 +138,20 @@ Google SSO (better-auth, beperkt tot het Workspace-domein) komt na overleg met I
 Dan verandert alleen `lib/auth.ts`: `getCurrentUser()` haalt de collega dan uit de
 better-auth-sessie en koppelt via `user.email`. De rest van de app merkt er niets van.
 
-## Later naar Vercel + Neon
+## Op Vercel zetten (met Neon)
 
-- Maak een Neon-database (EU-region) en zet de connection string als `DATABASE_URL` in
-  Vercel. Draai `pnpm db:migrate` en `pnpm db:seed` één keer tegen die database.
-- Zet `AUTH_SECRET` (en later de Google-SSO-variabelen) als environment variables in
-  Vercel. Secrets komen nooit in de code.
-- Polling, lazy verrekenen en de ledger werken serverless zonder aanpassingen. Er is geen
-  cron of achtergrondproces nodig.
+1. Importeer de GitHub-repo in Vercel (Add New → Project). De standaardinstellingen zijn goed.
+2. Voeg een database toe: in het Vercel-project **Storage → Create Database → Neon**,
+   regio **Frankfurt (eu-central-1)**. Vercel zet dan zelf `DATABASE_URL` en
+   `DATABASE_URL_UNPOOLED`.
+3. Zet bij **Settings → Environment Variables** nog `AUTH_SECRET` (een willekeurige
+   reeks van minstens 32 tekens, bv. `openssl rand -hex 32`).
+4. Deploy. Het script `vercel-build` voert eerst de migraties en de seed uit en bouwt
+   daarna de app. Er is geen losse stap nodig.
+
+Polling, lazy verrekenen en de ledger werken serverless zonder aanpassingen: geen cron,
+geen achtergrondproces. Iedereen met de link kan meedoen met zijn naam; Google SSO komt
+later in `lib/auth.ts`.
 
 ## Nog open / bekende punten
 
