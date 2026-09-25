@@ -1,8 +1,7 @@
 import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  resolve: { tsconfigPaths: true },
   test: {
     environment: "node",
     include: ["**/*.test.ts"],
@@ -10,5 +9,6 @@ export default defineConfig({
     // DB-tests delen één database; draai bestanden na elkaar.
     fileParallelism: false,
     setupFiles: ["./test/setup.ts"],
+    globalSetup: ["./test/global-setup.ts"],
   },
 });

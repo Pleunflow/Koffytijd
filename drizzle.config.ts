@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ quiet: true });
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({

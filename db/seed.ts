@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ quiet: true });
 import { sql } from "drizzle-orm";
 import { OFFICES } from "@/lib/offices";
 import { databaseUrl } from "@/lib/env";
